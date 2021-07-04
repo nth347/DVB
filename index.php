@@ -18,7 +18,11 @@ session_start();
         echo '<a href="index.php?action=upload-post.php">Upload a post</a>';
 
         if(isset($_GET['action'])) {
-            include_once ('actions/' . $_GET['action']);
+            $whitelist = ['search-posts.php', 'upload-post.php'];
+            $path = $_GET['action'];
+            if (in_array($path, $whitelist)) {
+                include_once ('actions/' . $_GET['action']);
+            }
         }
     } else {
         echo '<p>Log in required.</p>';
