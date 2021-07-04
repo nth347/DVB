@@ -13,23 +13,22 @@ if (!isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
     <?php
     require_once "config.php";
 
-    $keyword = $_GET['keyword'];
 
-    echo '<p>Posts containing ' . $keyword . '</p>';
+    echo '<p>Posts containing ' . $_GET['keyword'] . '</p>';
 
-    if ($keyword) {
-        $sql = 'SELECT * FROM posts WHERE title LIKE ' . "'%$keyword%'" . ' OR content LIKE ' . "'%$keyword%'" . '';
-        $rows = $pdo->query($sql);
-        unset($pdo);
-    }
+    if ($_GET['keyword']) {
+        $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE :keyword OR content LIKE :keyword");
+        $stmt->execute(['keyword' => '%' . $_GET['keyword'] . '%']);
+        $rows = $stmt->fetchAll();
 
-
-    if ($rows !== false && $rows >= 1) {
-        echo '<ul>';
-        foreach ($rows as $row) {
-            echo '<li>' . $row['title'] . ' - ' . $row['content'] . '</li>';
+        if ($rows !== false && $rows >= 1) {
+            echo '<ul>';
+            foreach ($rows as $row) {
+                echo '<li>' . $row['title'] . ' - ' . $row['content'] . '</li>';
+            }
+            echo '</ul>';
         }
-        echo '</ul>';
+        unset($pdo);
     }
     ?>
 </form>
