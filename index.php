@@ -42,7 +42,7 @@ session_start();
         $extensions = array("txt");
 
         # Validate the extension
-        if (in_array($file_ext, $extensions) === false) {
+        if (in_array($file_ext, $extensions) === false && sizeof($array) == 2) {
             $errors[] = "File extension not allowed.";
         }
 
@@ -52,23 +52,24 @@ session_start();
         }
 
         if (empty($errors) == true) {
+            $file_name = basename($file_name);
             move_uploaded_file($file_tmp, "uploads/" . $file_name);
             echo "<p>File uploaded.</p>";
-        }
 
-        require_once 'config.php';
-        $sql = "INSERT INTO posts (title, content) VALUES(:title, :content)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":title", $param_title);
-        $stmt->bindParam(":content", $param_content);
-        $param_title = $array[0];
-        $param_content = trim(file_get_contents('uploads/' . $_FILES['file']['name']));
-        try {
-            if ($stmt->execute() === true) {
-                echo '<p>Post uploaded</p>';
+            require_once 'config.php';
+            $sql = "INSERT INTO posts (title, content) VALUES(:title, :content)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(":title", $param_title);
+            $stmt->bindParam(":content", $param_content);
+            $param_title = $array[0];
+            $param_content = trim(file_get_contents('uploads/' . $_FILES['file']['name']));
+            try {
+                if ($stmt->execute() === true) {
+                    echo '<p>Post uploaded</p>';
+                }
+            } catch (PDOException $e) {
+                echo $e->getMessage();
             }
-        } catch (PDOException $e) {
-            echo $e->getMessage();
         }
     }
     ?>

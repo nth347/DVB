@@ -24,7 +24,7 @@ if (!isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
         if ($rows !== false && $rows >= 1) {
             echo '<ul>';
             foreach ($rows as $row) {
-                echo '<li>' . $row['title'] . ' - ' . $row['content'] . '</li>';
+                echo '<li>' . htmlspecialchars($row['title']) . ' - ' . htmlspecialchars($row['content']) . '</li>';
             }
             echo '</ul>';
         }
