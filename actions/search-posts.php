@@ -14,7 +14,7 @@ if (!isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
     require_once "config.php";
 
 
-    echo '<p>Posts containing ' . $_GET['keyword'] . '</p>';
+    echo '<p>Posts containing ' . htmlspecialchars($_GET['keyword']) . '</p>';
 
     if ($_GET['keyword']) {
         $stmt  = $pdo->prepare("SELECT * FROM posts WHERE title LIKE :keyword OR content LIKE :keyword");
